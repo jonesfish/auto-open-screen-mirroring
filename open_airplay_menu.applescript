@@ -1,3 +1,24 @@
+
+-- A click event works normally if screen mirroring is already in main menu bar
+-- but the icon may not be in the menu bar if it hasn't been placed there already.
+-- So we check if the Screen Mirroring item is in the menu bar and click it there
+-- if not we go through the Control Center drop down
+-- pass name of airplay device with commandline argument to autoselect that device. 
+-- if nothing is passed it'll just open the Screen Mirroring menu without selecting a device
+use framework "Foundation"
+use scripting additions
+
+
+-- passing commandline argument 
+-- https://stackoverflow.com/questions/57690558/compile-applescript-into-application-with-parameters
+set arguments to (current application's NSProcessInfo's processInfo's arguments) as list
+if first item of arguments contains "osascript" then set arguments to rest of arguments -- skip osascript path
+if (count arguments) is 1 then set end of arguments to "no arguments"
+repeat with anItem in rest of arguments -- skip the main executable path
+	set airPlayDevice to anItem
+end repeat
+# osascript still returns the last result
+
 tell application "System Events"
 	tell its application process "控制中心"
 		set OSVersion to get system version of (system info)
@@ -93,3 +114,4 @@ tell application "System Events"
 		end if
 	end tell
 end tell
+return
